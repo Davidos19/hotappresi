@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Szczegóły hotelu</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/cerulean/bootstrap.min.css">
+</head>
+<body>
+<h1 th:text="${hotel.name}"></h1>
+<p><strong>Lokalizacja:</strong> <span th:text="${hotel.location}"></span></p>
+<p><strong>Dostępne pokoje:</strong> <span th:text="${hotel.availableRooms}"></span></p>
+<p><strong>Średnia ocena:</strong>
+  <span th:text="${averageRating != 0 ? averageRating : 'Brak ocen'}"></span> / 5
+</p>
+<a href="/">Powrót do strony głównej</a>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

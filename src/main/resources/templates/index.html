@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Hotel Reservation</title>
+    <!-- Motyw Bootswatch, np. Cerulean -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/cerulean/bootstrap.min.css">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+          integrity="sha512-dN+0N5tnXJwHc7l+sdRvP+lswj5+Y1d0Th+5bdj+dCqY6y5Zp1eJp8p7MXJzYDEGx1K+yxI+U5aHc5+K4o5F5A=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Własne style -->
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+    <style>
+        /* Przykładowe animacje przycisków */
+        .btn {
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+<!-- Pasek nawigacyjny (fragment) -->
+<div th:replace="~{fragments/nav :: nav}"></div>
+
+<!-- Sekcja hero -->
+<header class="jumbotron jumbotron-fluid text-white" style="background: url('https://source.unsplash.com/1600x400/?hotel') no-repeat center center; background-size: cover;">
+    <div class="container text-center">
+        <h1 class="display-4"><i class="fas fa-hotel"></i> Witamy w Hotel Reservation</h1>
+        <p class="lead">Znajdź idealny hotel i dokonaj rezerwacji online</p>
+    </div>
+</header>
+
+<!-- Karuzela z promocjami -->
+<div class="container mb-4">
+    <div id="promoCarousel" class="carousel slide" data-ride="carousel">
+        <ol class="carousel-indicators">
+            <li data-target="#promoCarousel" data-slide-to="0" class="active"></li>
+            <li data-target="#promoCarousel" data-slide-to="1"></li>
+            <li data-target="#promoCarousel" data-slide-to="2"></li>
+        </ol>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="https://source.unsplash.com/1600x400/?luxury,hotel" class="d-block w-100" alt="Promocja 1">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Promocja Luksusowa</h5>
+                    <p>Wyjątkowe hotele w specjalnych cenach!</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="https://source.unsplash.com/1600x400/?budget,hotel" class="d-block w-100" alt="Promocja 2">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Oferta Budżetowa</h5>
+                    <p>Znajdź tani hotel na każdą okazję.</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="https://source.unsplash.com/1600x400/?resort,hotel" class="d-block w-100" alt="Promocja 3">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Oferta Resort</h5>
+                    <p>Wypoczynek w najlepszych resortach.</p>
+                </div>
+            </div>
+        </div>
+        <a class="carousel-control-prev" href="#promoCarousel" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Poprzedni</span>
+        </a>
+        <a class="carousel-control-next" href="#promoCarousel" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Następny</span>
+        </a>
+    </div>
+</div>
+
+<!-- Sekcja wyszukiwania -->
+<div class="container mb-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <form th:action="@{/search}" method="get" class="input-group">
+                <input type="text" name="keyword" placeholder="Szukaj hotelu..." class="form-control"
+                       th:value="${keyword}" list="suggestions">
+                <datalist id="suggestions">
+                    <option value="Hotel Kraków"></option>
+                    <option value="Hotel Warszawa"></option>
+                    <option value="Hotel Gdańsk"></option>
+                </datalist>
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Szukaj</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Sekcja dostępnych hoteli -->
+<div class="container mb-4">
+    <h2 class="mb-4">Dostępne Hotele</h2>
+    <div class="row">
+        <div class="col-md-4 mb-4" th:each="hotel : ${hotels}" th:if="${hotel != null}">
+            <div class="card h-100">
+                <img class="card-img-top" src="https://source.unsplash.com/400x300/?hotel,room" alt="Obraz hotelu">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${hotel.name}">Nazwa hotelu</h5>
+                    <p class="card-text">
+                        <strong>Lokalizacja:</strong> <span th:text="${hotel.location}">City</span><br>
+                        <strong>Dostępne pokoje:</strong> <span th:text="${hotel.availableRooms}">0</span>
+                    </p>
+                </div>
+                <div class="card-footer text-center">
+                    <a th:href="@{'/hotel/' + ${hotel.id}}" class="btn btn-outline-info btn-sm">
+                        <i class="fas fa-info-circle"></i> Szczegóły
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const hotelSelect = document.getElementById('hotelSelect');
+        const roomSelect = document.getElementById('roomSelect');
+
+        hotelSelect.addEventListener('change', function() {
+            const hotelId = this.value;
+            if (hotelId) {
+                // Wywołaj endpoint REST, np. /api/hotels/{hotelId}/rooms
+                fetch(`/api/hotels/${hotelId}/rooms`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Wyczyść poprzednie opcje
+                        roomSelect.innerHTML = '<option value="" disabled selected>-- Wybierz pokój --</option>';
+                        // Dodaj nowe opcje na podstawie otrzymanego JSON
+                        data.forEach(room => {
+                            const option = document.createElement('option');
+                            option.value = room.id;  // roomId
+                            option.text = `${room.roomType} - ${room.capacity} os. - ${room.price} PLN`;
+                            roomSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error('Błąd przy pobieraniu pokoi:', error));
+            }
+        });
+    });
+</script>
+
+<!-- Formularz rezerwacji -->
+<div class="container mb-5">
+    <h2 class="mb-4">Dodaj Rezerwację</h2>
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <form id="reservationForm" th:action="@{/reservation}" th:object="${reservation}" method="post">
+                <div class="form-group">
+                    <label for="hotelSelect">Wybierz hotel:</label>
+                    <select id="hotelSelect" class="form-control" name="hotelId" required>
+                        <option value="" disabled selected>-- Wybierz hotel --</option>
+                        <option th:each="hotel : ${hotels}"
+                                th:value="${hotel.id}"
+                                th:text="${hotel.name}"></option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="roomSelect">Wybierz pokój:</label>
+                    <select id="roomSelect" class="form-control" name="roomId" required>
+                        <option value="" disabled selected>-- Wybierz pokój --</option>
+                        <!-- Ten dropdown wypełnimy dynamicznie przez JavaScript -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="checkIn">Data przyjazdu:</label>
+                    <input type="date" id="checkIn" th:field="*{checkIn}" class="form-control" required/>
+                </div>
+
+                <div class="form-group">
+                    <label for="checkOut">Data wyjazdu:</label>
+                    <input type="date" id="checkOut" th:field="*{checkOut}" class="form-control" required/>
+                </div>
+
+                <button type="submit" class="btn btn-success">Zarezerwuj</button>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<!-- Lista rezerwacji użytkownika -->
+<div class="container mb-5">
+    <h2 class="mb-4">Twoje Rezerwacje</h2>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Hotel</th>
+                <th>Data przyjazdu</th>
+                <th>Data wyjazdu</th>
+                <th>Akcje</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="res : ${reservations}">
+                <td th:text="${res.id}"></td>
+                <td th:text="${res.hotelId}"></td>
+                <td th:text="${res.checkIn}"></td>
+                <td th:text="${res.checkOut}"></td>
+                <td>
+                    <a th:href="@{'/reservation/edit/' + ${res.id}}" class="btn btn-warning btn-sm">
+                        <i class="fas fa-edit"></i> Edytuj
+                    </a>
+                    <form th:action="@{/cancelReservation}" method="post" style="display: inline;">
+                        <input type="hidden" name="reservationId" th:value="${res.id}" />
+                        <button type="submit" class="btn btn-danger btn-sm"
+                                onclick="return confirm('Czy na pewno anulować rezerwację?')">
+                            <i class="fas fa-times"></i> Anuluj
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <a class="btn btn-secondary" th:href="@{/}">Powrót do strony głównej</a>
+</div>
+
+<!-- Stopka -->
+<footer class="footer bg-light text-center py-3">
+    <div class="container">
+        <span class="text-muted">© 2025 HotelReservation. Wszelkie prawa zastrzeżone.</span>
+    </div>
+</footer>
+
+<!-- Skrypty Bootstrap i jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

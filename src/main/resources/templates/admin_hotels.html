@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel Administracyjny – Zarządzanie Hotelami</title>
+  <!-- Użycie motywu Bootswatch (Cosmo) -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/cosmo/bootstrap.min.css">
+  <!-- Własny arkusz stylów, opcjonalnie -->
+  <link rel="stylesheet" th:href="@{/css/custom.css}">
+</head>
+<body>
+<!-- Wstawienie wspólnego paska nawigacyjnego -->
+<div th:replace="~{fragments/nav :: nav}"></div>
+
+<div class="container mt-4">
+  <h1>Panel Administracyjny – Zarządzanie Hotelami</h1>
+
+  <!-- Linki sortujące -->
+  <div class="mb-3">
+    <a th:href="@{/admin/hotels(sort='name')}" class="btn btn-outline-primary">Sortuj po nazwie</a>
+    <a th:href="@{/admin/hotels(sort='location')}" class="btn btn-outline-secondary">Sortuj po lokalizacji</a>
+    <a th:href="@{/admin/hotels}" class="btn btn-outline-info">Wyczyść sortowanie</a>
+  </div>
+
+  <a class="btn btn-primary mb-3" th:href="@{/admin/hotels/new}">Dodaj nowy hotel</a>
+
+  <!-- Prezentacja hoteli w formie kart -->
+  <div class="row">
+    <div class="col-md-4 mb-3" th:each="hotel : ${hotels}" th:if="${hotel != null}">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title" th:text="${hotel.name}">Nazwa hotelu</h5>
+          <h6 class="card-subtitle mb-2 text-muted" th:text="${hotel.location}">Lokalizacja</h6>
+          <p class="card-text">
+            Dostępne pokoje: <span th:text="${hotel.availableRooms}">0</span>
+          </p>
+          <a th:href="@{'/admin/hotels/edit/' + ${hotel.id}}"
+             class="btn btn-warning btn-sm">Edytuj</a>
+          <a th:href="@{'/admin/hotels/delete/' + ${hotel.id}}"
+             class="btn btn-danger btn-sm"
+             onclick="return confirm('Czy na pewno usunąć ten hotel?')">Usuń</a>
+          <a th:href="@{'/admin/hotels/' + ${hotel.id} + '/reservations'}"
+             class="btn btn-info btn-sm">Rezerwacje</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Prosty footer -->
+<footer class="footer mt-4 bg-light text-center">
+  <div class="container">
+    <span class="text-muted">© 2025 HotelReservation. Wszelkie prawa zastrzeżone.</span>
+  </div>
+</footer>
+
+<!-- Skrypty Bootstrap i jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

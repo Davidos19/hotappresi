@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Kalendarz Rezerwacji</title>
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css' rel='stylesheet' />
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+<div class="container mt-4">
+    <h1>Kalendarz Rezerwacji</h1>
+    <div id='calendar'></div>
+</div>
+
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js'></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            events: '/api/reservations/calendar' // Endpoint, który zwróci wydarzenia (rezerwacje) w formacie JSON
+        });
+        calendar.render();
+    });
+</script>
+</body>
+</html>

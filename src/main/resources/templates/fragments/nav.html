@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+<nav id="nav" class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" th:href="@{/static}">HotelReservation</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link" th:href="@{/}">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" th:href="@{/profile}">Profil</a>
+      </li>
+      <li class="nav-item">
+        <form th:action="@{/logout}" method="post" class="form-inline">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+          <button type="submit" class="btn btn-link nav-link" style="padding: 0;">Wyloguj</button>
+        </form>
+      </li>
+    </ul>
+    <button id="darkModeToggle" class="btn btn-outline-light ml-2">Tryb ciemny</button>
+  </div>
+</nav>
+<script>
+  document.getElementById("darkModeToggle").addEventListener("click", function() {
+    document.body.classList.toggle("dark-mode");
+    // Opcjonalnie możesz przełączać też klasy dla navbaru i stopki:
+    var nav = document.querySelector(".navbar");
+    var footer = document.querySelector(".footer");
+    if (nav) { nav.classList.toggle("dark-mode"); }
+    if (footer) { footer.classList.toggle("dark-mode"); }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Profil użytkownika</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/cerulean/bootstrap.min.css">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+
+<div class="container mt-4">
+  <h1>Profil użytkownika</h1>
+  <p>Jesteś zalogowany jako: <strong th:text="${username}"></strong></p>
+
+  <!-- Komunikaty -->
+  <div th:if="${message}" class="alert alert-success" role="alert">
+    <p th:text="${message}"></p>
+  </div>
+  <div th:if="${error}" class="alert alert-danger" role="alert">
+    <p th:text="${error}"></p>
+  </div>
+
+  <h2>Zmień hasło</h2>
+  <form th:action="@{/profile/update}" th:object="${passwordUpdateForm}" method="post">
+    <div class="form-group">
+      <label for="oldPassword">Stare hasło:</label>
+      <input type="password" id="oldPassword" th:field="*{oldPassword}" class="form-control" required />
+      <div th:if="${#fields.hasErrors('oldPassword')}" th:errors="*{oldPassword}" class="text-danger"></div>
+    </div>
+    <div class="form-group">
+      <label for="newPassword">Nowe hasło:</label>
+      <input type="password" id="newPassword" th:field="*{newPassword}" class="form-control" required />
+      <div th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}" class="text-danger"></div>
+    </div>
+    <div class="form-group">
+      <label for="confirmPassword">Potwierdź nowe hasło:</label>
+      <input type="password" id="confirmPassword" th:field="*{confirmPassword}" class="form-control" required />
+      <div th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" class="text-danger"></div>
+    </div>
+    <button type="submit" class="btn btn-primary">Zmień hasło</button>
+  </form>
+
+  <a href="/" class="btn btn-secondary mt-3">Powrót do strony głównej</a>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

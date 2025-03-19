@@ -1,0 +1,32 @@
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.navbar-brand {
+    font-weight: bold;
+}
+.card {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border: none;
+}
+footer {
+    margin-top: 2rem;
+    padding: 1rem 0;
+    background-color: #343a40;
+    color: #fff;
+    text-align: center;
+}
+.btn:hover {
+    transform: scale(1.05);
+    transition: transform 0.2s;
+}
+/* Definicje dla trybu ciemnego */
+body.dark-mode {
+    background-color: #343a40;
+    color: #f8f9fa;
+}
+.navbar.dark-mode,
+.footer.dark-mode {
+    background-color: #23272b;
+    color: #f8f9fa;
+}

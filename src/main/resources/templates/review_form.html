@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodaj Recenzję</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/cerulean/bootstrap.min.css">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+<div class="container mt-4">
+    <h2>Dodaj recenzję dla hotelu <span th:text="${hotel.name}"></span></h2>
+    <form th:action="@{/review}" th:object="${review}" method="post">
+        <input type="hidden" th:field="*{hotelId}" th:value="${hotel.id}" />
+        <div class="form-group">
+            <label for="rating">Ocena (1-5):</label>
+            <input type="number" id="rating" th:field="*{rating}" min="1" max="5" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <label for="comment">Komentarz:</label>
+            <textarea id="comment" th:field="*{comment}" class="form-control" rows="3" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-success">Dodaj recenzję</button>
+        <a th:href="@{'/hotel/' + ${hotel.id}}" class="btn btn-secondary">Powrót</a>
+    </form>
+</div>
+</body>
+</html>

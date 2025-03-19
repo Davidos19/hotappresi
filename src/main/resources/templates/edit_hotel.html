@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Edycja Hotelu</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/cerulean/bootstrap.min.css">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+<div class="container">
+  <h1>Edycja Hotelu</h1>
+  <form th:action="@{/admin/hotels/save}" th:object="${hotel}" method="post">
+    <div th:if="${hotel.id != null}">
+      <input type="hidden" th:field="*{id}" />
+    </div>
+    <!-- Pola edycji hotelu -->
+    <div class="form-group">
+      <label for="name">Nazwa hotelu:</label>
+      <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="Podaj nazwę hotelu"/>
+    </div>
+    <div class="form-group">
+      <label for="location">Lokalizacja:</label>
+      <input type="text" id="location" th:field="*{location}" class="form-control" placeholder="Podaj lokalizację"/>
+    </div>
+    <!-- Inne pola hotelu -->
+    <button type="submit" class="btn btn-primary">Zapisz zmiany hotelu</button>
+  </form>
+
+  <hr/>
+  <h2>Pokój</h2>
+  <!-- Przycisk do przejścia do dodawania nowego pokoju -->
+  <a th:href="@{'/admin/hotels/' + ${hotel.id} + '/rooms/new'}" class="btn btn-success mb-3">Dodaj nowy pokój</a>
+
+  <!-- Lista pokoi powiązanych z hotelem -->
+  <div th:if="${rooms != null}">
+    <table class="table table-bordered">
+      <thead>
+      <tr>
+        <th>Numer pokoju</th>
+        <th>Typ</th>
+        <th>Pojemność</th>
+        <th>Cena (PLN)</th>
+        <th>Zdjęcie</th>
+        <th>Akcje</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="room : ${rooms}">
+        <td th:text="${room.roomNumber}">-</td>
+        <td th:text="${room.roomType}">-</td>
+        <td th:text="${room.capacity}">-</td>
+        <td th:text="${room.price}">-</td>
+        <td>
+          <img th:src="${room.imageUrl}" alt="Zdjęcie pokoju" style="max-width: 100px;"/>
+        </td>
+        <td>
+          <!-- Przykładowe akcje: edycja i usunięcie -->
+          <a th:href="@{'/admin/hotels/' + ${hotel.id} + '/rooms/edit/' + ${room.id}}" class="btn btn-warning btn-sm">Edytuj</a>
+          <a th:href="@{'/admin/hotels/' + ${hotel.id} + '/rooms/delete/' + ${room.id}}" class="btn btn-danger btn-sm" onclick="return confirm('Czy na pewno usunąć pokój?');">Usuń</a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</body>
+</html>

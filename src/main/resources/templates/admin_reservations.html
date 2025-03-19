@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Rezerwacje dla hotelu</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/cerulean/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-4">
+  <h1>Rezerwacje dla hotelu <span th:text="${hotel.name}"></span></h1>
+  <p>Lokalizacja: <span th:text="${hotel.location}"></span></p>
+
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Użytkownik</th>
+      <th>Pokój</th> <!-- NOWA KOLUMNA -->
+      <th>Data przyjazdu</th>
+      <th>Data wyjazdu</th>
+      <th>Akcje</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="res : ${reservations}">
+      <td th:text="${res.id}"></td>
+      <td th:text="${res.username}"></td>
+      <td>
+        <!-- Jeśli roomDetails[res.roomId] istnieje, wyświetlamy np. typ pokoju i pojemność -->
+        <span th:if="${roomDetails[res.roomId] != null}"
+              th:text="${roomDetails[res.roomId].roomType}">Typ pokoju</span>
+        <br/>
+        <small th:if="${roomDetails[res.roomId] != null}"
+               th:text="'Pojemność: ' + roomDetails[res.roomId].capacity + ' os.'">Pojemność</small>
+      </td>
+      <td th:text="${res.checkIn}"></td>
+      <td th:text="${res.checkOut}"></td>
+      <td>
+        <a class="btn btn-danger btn-sm" th:href="@{'/admin/reservations/delete/' + ${res.id}}"
+           onclick="return confirm('Czy na pewno anulować rezerwację?')">Anuluj</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

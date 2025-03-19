@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${hotel.name}">Szczegóły hotelu</title>
+  <!-- Bootswatch Cerulean (lub inny motyw) -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/cerulean/bootstrap.min.css">
+  <!-- Własne style -->
+  <link rel="stylesheet" th:href="@{/css/custom.css}">
+</head>
+<body>
+<!-- Pasek nawigacyjny -->
+<div th:replace="~{fragments/nav :: nav}"></div>
+
+<div class="container mt-4 mb-5">
+  <!-- Nagłówek hotelu -->
+  <div class="row">
+    <div class="col-md-12 text-center">
+      <h1 th:text="${hotel.name}">Hotel Name</h1>
+      <p>
+        <strong>Lokalizacja:</strong> <span th:text="${hotel.location}">City</span><br/>
+        <strong>Dostępne pokoje:</strong> <span th:text="${hotel.availableRooms}">0</span><br/>
+        <strong>Średnia ocena:</strong>
+        <span th:text="${averageRating != 0 ? averageRating : 'Brak ocen'}"></span> / 5
+      </p>
+    </div>
+  </div>
+
+  <!-- Opcjonalne zdjęcie główne hotelu -->
+  <!--
+  <div class="row mb-4">
+      <div class="col-md-8 offset-md-2">
+          <img th:src="${hotel.imageUrl != null ? hotel.imageUrl : 'https://source.unsplash.com/1200x400/?hotel'}"
+               class="img-fluid" alt="Zdjęcie hotelu">
+      </div>
+  </div>
+  -->
+
+  <!-- Sekcja recenzji (opcjonalnie) -->
+  <div class="row mb-4">
+    <div class="col-md-8 offset-md-2">
+      <h3 class="mb-3">Recenzje</h3>
+      <div th:if="${#lists.isEmpty(reviews)}">
+        <p>Brak recenzji.</p>
+      </div>
+      <div th:each="rev : ${reviews}" class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">
+            Ocena: <span th:text="${rev.rating}">0</span> / 5
+          </h5>
+          <p class="card-text" th:text="${rev.comment}">Komentarz użytkownika</p>
+          <p class="card-text">
+            <small class="text-muted">Dodane przez: <span th:text="${rev.username}">User</span></small>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sekcja pokoi w hotelu -->
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <h3 class="mb-3">Dostępne Pokoje</h3>
+      <div class="row">
+        <div class="col-md-4 mb-4" th:each="room : ${rooms}">
+          <div class="card h-100">
+            <!-- Zdjęcie pokoju -->
+            <img class="card-img-top"
+                 th:src="${room.imageUrl != null ? room.imageUrl : 'https://source.unsplash.com/400x300/?room'}"
+                 alt="Zdjęcie pokoju">
+            <div class="card-body">
+              <h5 class="card-title" th:text="${room.roomType}">Typ pokoju</h5>
+              <p class="card-text">
+                <strong>Liczba osób:</strong> <span th:text="${room.capacity}">2</span><br/>
+                <strong>Cena za noc:</strong> <span th:text="${room.price}">100</span> PLN
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Opcjonalnie: formularz dodawania recenzji -->
+
+  <div class="row mb-4">
+      <div class="col-md-8 offset-md-2">
+          <h3>Dodaj recenzję</h3>
+          <form th:action="@{/review}" th:object="${review}" method="post">
+              <input type="hidden" th:field="*{hotelId}" th:value="${hotel.id}" />
+              <div class="form-group">
+                  <label for="rating">Ocena (1-5):</label>
+                  <input type="number" id="rating" th:field="*{rating}" min="1" max="5"
+                         class="form-control" required />
+              </div>
+              <div class="form-group">
+                  <label for="comment">Komentarz:</label>
+                  <textarea id="comment" th:field="*{comment}"
+                            class="form-control" rows="3" required></textarea>
+              </div>
+              <button type="submit" class="btn btn-success">Dodaj recenzję</button>
+          </form>
+      </div>
+  </div>
+
+
+  <div class="text-center mt-3">
+    <a class="btn btn-secondary" th:href="@{/}">Powrót do strony głównej</a>
+  </div>
+</div>
+
+<!-- Stopka -->
+<footer class="footer bg-light text-center py-3">
+  <div class="container">
+    <span class="text-muted">© 2025 HotelReservation. Wszelkie prawa zastrzeżone.</span>
+  </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

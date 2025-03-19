@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Edycja rezerwacji</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<h1>Edycja rezerwacji</h1>
+
+<!-- Wyświetlenie informacji o hotelu (tylko do odczytu) -->
+<p>Hotel: <strong th:text="${hotelName}"></strong></p>
+
+<form th:action="@{/reservation/update}" th:object="${reservation}" method="post">
+  <!-- Ukryte pole z ID rezerwacji -->
+  <input type="hidden" th:field="*{id}" />
+  <!-- Ukryte pole z hotelId, którego nie można zmienić -->
+  <input type="hidden" th:field="*{hotelId}" />
+
+  <div>
+    <label for="guestName">Imię i nazwisko:</label>
+    <input type="text" id="guestName" th:field="*{guestName}" required/>
+  </div>
+  <div>
+    <label for="checkIn">Data przyjazdu:</label>
+    <input type="date" id="checkIn" th:field="*{checkIn}" required/>
+  </div>
+  <div>
+    <label for="checkOut">Data wyjazdu:</label>
+    <input type="date" id="checkOut" th:field="*{checkOut}" required/>
+  </div>
+  <button type="submit">Aktualizuj rezerwację</button>
+</form>
+
+<a href="/">Powrót do strony głównej</a>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

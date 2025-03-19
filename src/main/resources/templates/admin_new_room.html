@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodaj Pokój</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/cerulean/bootstrap.min.css">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+<div class="container">
+    <h1>Dodaj nowy pokój</h1>
+    <form th:action="@{'/admin/hotels/' + ${room.hotelId} + '/rooms/save'}" th:object="${room}" method="post">
+        <!-- Jeśli room.id nie jest null, wyświetl ukryte pole -->
+        <div th:if="${room.id != null}">
+            <input type="hidden" th:field="*{id}" />
+        </div>
+
+
+        <div class="form-group">
+            <label for="roomNumber">Numer pokoju:</label>
+            <input type="text" id="roomNumber" th:field="*{roomNumber}" class="form-control" placeholder="Podaj numer pokoju"/>
+        </div>
+        <div class="form-group">
+            <label for="roomType">Typ pokoju:</label>
+            <input type="text" id="roomType" th:field="*{roomType}" class="form-control" placeholder="np. Standard, Deluxe, Suite"/>
+        </div>
+        <div class="form-group">
+            <label for="capacity">Pojemność:</label>
+            <input type="number" id="capacity" th:field="*{capacity}" class="form-control" placeholder="Liczba osób" min="1"/>
+        </div>
+        <div class="form-group">
+            <label for="price">Cena (PLN):</label>
+            <input type="number" step="0.01" id="price" th:field="*{price}" class="form-control" placeholder="Podaj cenę"/>
+        </div>
+        <div class="form-group">
+            <label for="imageUrl">URL zdjęcia:</label>
+            <input type="text" id="imageUrl" th:field="*{imageUrl}" class="form-control" placeholder="Adres URL zdjęcia pokoju"/>
+        </div>
+        <button type="submit" class="btn btn-primary">Zapisz</button>
+    </form>
+</div>
+</body>
+</html>
