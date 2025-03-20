@@ -97,28 +97,45 @@ public class AdminController {
 
 
     // Formularz dodawania nowej rezerwacji przez admina
-    @GetMapping("/reservations/new")
-    public String newReservation(Model model) {
+    @GetMapping("/{hotelId}/reservations/new")
+    public String newReservationForHotel(@PathVariable Long hotelId, Model model) {
+        Hotel hotel = hotelService.getHotelById(hotelId);
+        if (hotel == null) {
+            return "redirect:/admin/hotels";
+        }
+
+        // Nowa rezerwacja z ustawionym hotelId
         Reservation reservation = new Reservation();
+        reservation.setHotelId(hotelId);
+
+        // Pobierz listę pokoi danego hotelu
+        List<Room> rooms = roomService.getRoomsByHotelId(hotelId);
+
+        model.addAttribute("hotel", hotel);
+        model.addAttribute("rooms", rooms);
         model.addAttribute("reservation", reservation);
-        // Możesz dodać listy hoteli i pokoi, by admin mógł wybrać
-        model.addAttribute("hotels", hotelService.getAllHotels());
-        // Jeżeli chcesz wyświetlać pokoje zależne od wybranego hotelu, możesz to zaimplementować po stronie klienta (AJAX)
+
         return "admin_new_reservation";
     }
 
+
+
+
     // Zapis rezerwacji przez admina
     @PostMapping("/reservations/save")
-    public String saveReservation(@ModelAttribute("reservation") Reservation reservation, RedirectAttributes redirectAttributes) {
+    public String saveReservation(@ModelAttribute("reservation") Reservation reservation,
+                                  RedirectAttributes redirectAttributes) {
         try {
-            // Tutaj możesz użyć makeReservation, lub stworzyć osobną logikę dla rezerwacji admina
             reservationService.makeReservation(reservation);
             redirectAttributes.addFlashAttribute("message", "Rezerwacja została dodana.");
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
-        return "redirect:/admin/reservations";
+        // Po zapisaniu wracamy do rezerwacji konkretnego hotelu
+        return "redirect:/admin/hotels/" + reservation.getHotelId() + "/reservations";
     }
+
+
 
 
     // Formularz dodawania nowego hotelu

@@ -20,11 +20,14 @@ public class ReservationService {
 
     private final HotelRepository hotelRepository;
     private final ReservationRepository reservationRepository;
+    private final UserService userService;
 
     // Konstruktor bez wstrzykiwania samego siebie
-    public ReservationService(HotelRepository hotelRepository, ReservationRepository reservationRepository) {
+    public ReservationService(HotelRepository hotelRepository, ReservationRepository reservationRepository, UserService userService) {
         this.hotelRepository = hotelRepository;
         this.reservationRepository = reservationRepository;
+        this.userService = userService;
+
     }
 
     public List<Hotel> getAllHotels() {
@@ -69,7 +72,10 @@ public class ReservationService {
 
     public void makeReservation(Reservation reservation) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        reservation.setUsername(username);
+        if (reservation.getUsername() == null || reservation.getUsername().trim().isEmpty()) {
+            reservation.setUsername(userService.getCurrentUser().getUsername());
+        }
+
 
         if (reservation.getCheckIn().isAfter(reservation.getCheckOut())) {
             throw new RuntimeException("Data przyjazdu musi być przed datą wyjazdu!");
@@ -124,4 +130,13 @@ public class ReservationService {
                 .filter(r -> r.getCheckIn().equals(date) || r.getCheckOut().equals(date))
                 .collect(Collectors.toList());
     }
+    public void deleteReservation(Long reservationId) {
+        Reservation reservation = reservationRepository.getReservationById(reservationId);
+        if (reservation != null) {
+            reservationRepository.removeReservation(reservationId);
+
+        }
+
+    }
+
 }
