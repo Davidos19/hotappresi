@@ -107,7 +107,7 @@
                 <div class="card-body">
                     <h5 class="card-title" th:text="${hotel.name}">Nazwa hotelu</h5>
                     <p class="card-text">
-                        <strong>Lokalizacja:</strong> <span th:text="${hotel.location}">City</span><br>
+                        <strong>Lokalizacja:</strong> <span th:text="${hotel.location}">Miasto</span><br>
                         <strong>Dostępne pokoje:</strong> <span th:text="${hotel.availableRooms}">0</span>
                     </p>
                 </div>
@@ -163,25 +163,21 @@
                                 th:text="${hotel.name}"></option>
                     </select>
                 </div>
-
                 <div class="form-group">
                     <label for="roomSelect">Wybierz pokój:</label>
                     <select id="roomSelect" class="form-control" name="roomId" required>
                         <option value="" disabled selected>-- Wybierz pokój --</option>
-                        <!-- Ten dropdown wypełnimy dynamicznie przez JavaScript -->
+                        <!-- opcje będą dodawane dynamicznie przez JS -->
                     </select>
                 </div>
-
                 <div class="form-group">
                     <label for="checkIn">Data przyjazdu:</label>
                     <input type="date" id="checkIn" th:field="*{checkIn}" class="form-control" required/>
                 </div>
-
                 <div class="form-group">
                     <label for="checkOut">Data wyjazdu:</label>
                     <input type="date" id="checkOut" th:field="*{checkOut}" class="form-control" required/>
                 </div>
-
                 <button type="submit" class="btn btn-success">Zarezerwuj</button>
             </form>
 

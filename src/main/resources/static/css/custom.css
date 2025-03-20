@@ -6,8 +6,12 @@ body {
     font-weight: bold;
 }
 .card {
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border: none;
+}
+/* Zaokrąglone rogi kart i przycisków */
+.card, .btn {
+    border-radius: 8px;
 }
 footer {
     margin-top: 2rem;
@@ -16,24 +20,28 @@ footer {
     color: #fff;
     text-align: center;
 }
+/* Hover na przyciskach */
 .btn:hover {
-    transform: scale(1.05);
-    transition: transform 0.2s;
+    transform: translateY(-2px);
+    transition: transform 0.2s ease-in-out;
 }
-/* Definicje dla trybu ciemnego */
-body.dark-mode {
+/* Ulepszony wygląd nagłówka strony */
+header.jumbotron {
+    background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://source.unsplash.com/1600x400/?hotel') no-repeat center center;
+    background-size: cover;
+}
+.dark-mode {
     background-color: #343a40;
     color: #f8f9fa;
 }
-.navbar.dark-mode,
-.footer.dark-mode {
-    background-color: #23272b;
+
+.dark-mode .navbar,
+.dark-mode .footer {
+    background-color: #212529 !important;
+}
+
+.dark-mode .card {
+    background-color: #495057;
     color: #f8f9fa;
 }
-.fade-in {
-    animation: fadeIn 0.5s ease-in-out;
-}
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
+
