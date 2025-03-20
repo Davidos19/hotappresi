@@ -138,5 +138,8 @@ public class ReservationService {
         }
 
     }
+    public List<Reservation> getReservationsByUsername(String username) {
+        return reservationRepository.findByUsername(username);
+    }
 
 }

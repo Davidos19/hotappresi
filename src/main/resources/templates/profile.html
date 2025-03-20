@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Profil użytkownika</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/cerulean/bootstrap.min.css">
 </head>
@@ -10,7 +11,19 @@
 
 <div class="container mt-4">
   <h1>Profil użytkownika</h1>
-  <p>Jesteś zalogowany jako: <strong th:text="${username}"></strong></p>
+
+  <!-- Sekcja z danymi profilu -->
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title" th:text="${user.username}">Username</h5>
+      <p class="card-text">
+        <strong>Email:</strong> <span th:text="${user.email}"></span><br/>
+        <strong>Imię:</strong> <span th:text="${user.firstName}"></span><br/>
+        <strong>Nazwisko:</strong> <span th:text="${user.lastName}"></span>
+      </p>
+      <a class="btn btn-primary" th:href="@{/profile/edit}">Edytuj profil</a>
+    </div>
+  </div>
 
   <!-- Komunikaty -->
   <div th:if="${message}" class="alert alert-success" role="alert">
@@ -20,6 +33,7 @@
     <p th:text="${error}"></p>
   </div>
 
+  <!-- Formularz zmiany hasła -->
   <h2>Zmień hasło</h2>
   <form th:action="@{/profile/update}" th:object="${passwordUpdateForm}" method="post">
     <div class="form-group">
@@ -39,6 +53,39 @@
     </div>
     <button type="submit" class="btn btn-primary">Zmień hasło</button>
   </form>
+
+  <!-- Historia rezerwacji -->
+  <h2 class="mt-5">Historia rezerwacji</h2>
+  <div th:if="${#lists.isEmpty(reservations)}">
+    <p>Brak rezerwacji.</p>
+  </div>
+  <div th:if="${!#lists.isEmpty(reservations)}">
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Hotel</th>
+        <th>Pokój</th>
+        <th>Data przyjazdu</th>
+        <th>Data wyjazdu</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="res : ${reservations}">
+        <td th:text="${res.id}"></td>
+        <!-- Wyświetlamy nazwę hotelu -->
+        <td th:text="${hotelDetails[res.hotelId].name}">Nazwa hotelu</td>
+        <!-- Wyświetlamy np. numer pokoju i/lub typ pokoju -->
+        <td th:text="${roomDetails[res.roomId].roomNumber} + ' - ' + ${roomDetails[res.roomId].roomType}">
+          Informacje o pokoju
+        </td>
+        <td th:text="${res.checkIn}"></td>
+        <td th:text="${res.checkOut}"></td>
+      </tr>
+
+      </tbody>
+    </table>
+  </div>
 
   <a href="/" class="btn btn-secondary mt-3">Powrót do strony głównej</a>
 </div>

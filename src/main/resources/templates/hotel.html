@@ -2,10 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <title>Szczegóły hotelu</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/cerulean/bootstrap.min.css">
 </head>
 <body>
+<div th:replace="~{fragments/nav :: nav}"></div>
 <h1 th:text="${hotel.name}"></h1>
 <p><strong>Lokalizacja:</strong> <span th:text="${hotel.location}"></span></p>
 <p><strong>Dostępne pokoje:</strong> <span th:text="${hotel.availableRooms}"></span></p>
