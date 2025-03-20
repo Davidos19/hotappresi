@@ -129,6 +129,7 @@ public class ProfileController {
         // W InMemoryUserDetailsManager dane są przechowywane tylko w pamięci. W przypadku bazy danych
         // należałoby zapisać zmodyfikowanego użytkownika, np. userService.saveUser(user);
         // Tutaj możesz zaktualizować dane w pamięci lub po prostu potwierdzić zmiany
+        userService.updateUser(user);
         redirectAttributes.addFlashAttribute("message", "Profil został zaktualizowany.");
         return "redirect:/profile";
     }

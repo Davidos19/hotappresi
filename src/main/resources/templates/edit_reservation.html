@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Edycja Rezerwacji</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/cerulean/bootstrap.min.css">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+<div class="container mt-4">
+  <h1>Edycja Rezerwacji</h1>
+  <form th:action="@{/reservation/update}" th:object="${reservation}" method="post">
+    <!-- Ukryte pole z ID rezerwacji -->
+    <input type="hidden" th:field="*{id}" />
+
+    <!-- Pole wyboru hotelu (opcjonalnie, jeśli chcesz umożliwić zmianę hotelu) -->
+    <!-- Jeśli hotel nie powinien być edytowalny, możesz wyświetlić tylko informację -->
+    <div class="form-group">
+      <label >Hotel:</label>
+      <p th:text="${reservation.hotelId}">ID hotelu</p>
+    </div>
+
+    <!-- Dropdown wyboru pokoju -->
+    <div class="form-group">
+      <label for="roomSelect">Pokój:</label>
+      <select id="roomSelect" th:field="*{roomId}" class="form-control" required>
+        <option value="" disabled>-- Wybierz pokój --</option>
+        <option th:each="room : ${rooms}"
+                th:value="${room.id}"
+                th:text="${room.roomNumber} + ' - ' + ${room.roomType}">
+        </option>
+      </select>
+    </div>
+
+    <!-- Data przyjazdu -->
+    <div class="form-group">
+      <label for="checkIn">Data przyjazdu:</label>
+      <input type="date" id="checkIn" th:field="*{checkIn}" class="form-control"/>
+    </div>
+
+    <!-- Data wyjazdu -->
+    <div class="form-group">
+      <label for="checkOut">Data wyjazdu:</label>
+      <input type="date" id="checkOut" th:field="*{checkOut}" class="form-control"/>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
+    <a class="btn btn-secondary" th:href="@{/}">Anuluj</a>
+  </form>
+</div>
+</body>
+</html>

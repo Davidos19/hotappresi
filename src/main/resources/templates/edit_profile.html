@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Edycja Profilu</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/cerulean/bootstrap.min.css">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+<div class="container mt-4">
+  <h1>Edycja Profilu</h1>
+  <form th:action="@{/profile/save}" th:object="${user}" method="post">
+    <div class="form-group">
+      <label for="username">Nazwa użytkownika:</label>
+      <!-- Pole to tylko do wyświetlania, nie edytowalne -->
+      <input type="text" id="username" th:field="*{username}" class="form-control" readonly/>
+    </div>
+    <div class="form-group">
+      <label for="email">Email:</label>
+      <input type="email" id="email" th:field="*{email}" class="form-control" required/>
+    </div>
+    <div class="form-group">
+      <label for="firstName">Imię:</label>
+      <input type="text" id="firstName" th:field="*{firstName}" class="form-control" required/>
+    </div>
+    <div class="form-group">
+      <label for="lastName">Nazwisko:</label>
+      <input type="text" id="lastName" th:field="*{lastName}" class="form-control" required/>
+    </div>
+    <div class="form-group">
+      <label for="phone">Telefon:</label>
+      <input type="text" id="phone" th:field="*{phoneNumber}" class="form-control" required/>
+    </div>
+    <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
+    <a class="btn btn-secondary" th:href="@{/profile}">Anuluj</a>
+  </form>
+</div>
+</body>
+</html>

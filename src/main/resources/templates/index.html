@@ -198,15 +198,26 @@
             <tr>
                 <th>ID</th>
                 <th>Hotel</th>
+                <th>Pokój</th>
                 <th>Data przyjazdu</th>
                 <th>Data wyjazdu</th>
                 <th>Akcje</th>
             </tr>
             </thead>
+
             <tbody>
             <tr th:each="res : ${reservations}">
                 <td th:text="${res.id}"></td>
-                <td th:text="${res.hotelId}"></td>
+                <!-- Nazwa hotelu z mapy hotelDetails -->
+                <td th:text="${hotelDetails[res.hotelId].name}">Nazwa hotelu</td>
+                <!-- Informacje o pokoju z mapy roomDetails -->
+                <td>
+        <span th:if="${roomDetails[res.roomId] != null}"
+              th:text="${roomDetails[res.roomId].roomNumber} + ' - ' + ${roomDetails[res.roomId].roomType}">
+          Pokój
+        </span>
+                    <span th:if="${roomDetails[res.roomId] == null}">Brak danych</span>
+                </td>
                 <td th:text="${res.checkIn}"></td>
                 <td th:text="${res.checkOut}"></td>
                 <td>
@@ -223,6 +234,7 @@
                 </td>
             </tr>
             </tbody>
+
         </table>
     </div>
     <a class="btn btn-secondary" th:href="@{/}">Powrót do strony głównej</a>
@@ -234,6 +246,25 @@
         <span class="text-muted">© 2025 HotelReservation. Wszelkie prawa zastrzeżone.</span>
     </div>
 </footer>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Obsługa pola "checkIn"
+        const checkIn = document.getElementById('checkIn');
+        if (checkIn && checkIn.showPicker) {
+            checkIn.addEventListener('click', function() {
+                checkIn.showPicker();
+            });
+        }
+
+        // Obsługa pola "checkOut"
+        const checkOut = document.getElementById('checkOut');
+        if (checkOut && checkOut.showPicker) {
+            checkOut.addEventListener('click', function() {
+                checkOut.showPicker();
+            });
+        }
+    });
+</script>
 
 <!-- Skrypty Bootstrap i jQuery -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

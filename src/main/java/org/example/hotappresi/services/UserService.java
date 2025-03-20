@@ -6,9 +6,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 public class UserService {
-
+    private final Map<String, AppUser> userStore = new HashMap<>();
+    public void registerUser(AppUser newUser) {
+        userStore.put(newUser.getUsername(), newUser);
+    }
     public AppUser getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -29,5 +35,9 @@ public class UserService {
             return user;
         }
         return null;
+    }
+    public void updateUser(AppUser updatedUser) {
+        // Założenie: username się nie zmienia, więc możemy nadpisać wpis
+        userStore.put(updatedUser.getUsername(), updatedUser);
     }
 }

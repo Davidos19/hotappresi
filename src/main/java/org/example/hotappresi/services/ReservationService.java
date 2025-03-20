@@ -103,10 +103,13 @@ public class ReservationService {
         if (updatedReservation.getCheckIn().isBefore(LocalDate.now())) {
             throw new RuntimeException("Data przyjazdu nie może być w przeszłości!");
         }
-        existing.setCheckIn(updatedReservation.getCheckIn());
-        existing.setCheckOut(updatedReservation.getCheckOut());
+        if (existing != null) {
+            System.out.println("Aktualizacja roomId z " + existing.getRoomId() + " na " + updatedReservation.getRoomId());
+            existing.setRoomId(updatedReservation.getRoomId());
+            existing.setCheckIn(updatedReservation.getCheckIn());
+            existing.setCheckOut(updatedReservation.getCheckOut());
+        }
     }
-
     public List<Reservation> getUserReservations() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return reservationRepository.getAllReservations().stream()

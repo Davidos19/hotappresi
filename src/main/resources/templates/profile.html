@@ -15,12 +15,19 @@
   <!-- Sekcja z danymi profilu -->
   <div class="card mb-3">
     <div class="card-body">
-      <h5 class="card-title" th:text="${user.username}">Username</h5>
-      <p class="card-text">
-        <strong>Email:</strong> <span th:text="${user.email}"></span><br/>
-        <strong>Imię:</strong> <span th:text="${user.firstName}"></span><br/>
-        <strong>Nazwisko:</strong> <span th:text="${user.lastName}"></span>
-      </p>
+      <div th:if="${user != null}">
+        <h5 class="card-title" th:text="${user.username}">Username</h5>
+        <p class="card-text">
+          <strong>Imię:</strong> <span th:text="${user.firstName}"></span><br/>
+          <strong>Nazwisko:</strong> <span th:text="${user.lastName}"></span><br/>
+          <strong>Email:</strong> <span th:text="${user.email}"></span><br/>
+          <strong>Telefon:</strong> <span th:text="${user.phoneNumber}"></span>
+        </p>
+      </div>
+      <div th:if="${user == null}">
+        <p>Brak danych o użytkowniku.</p>
+      </div>
+
       <a class="btn btn-primary" th:href="@{/profile/edit}">Edytuj profil</a>
     </div>
   </div>

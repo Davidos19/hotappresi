@@ -11,6 +11,7 @@ import org.example.hotappresi.services.ReviewService;
 import org.example.hotappresi.services.RoomService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import org.example.hotappresi.models.Reservation;
 import org.example.hotappresi.services.ReservationService;
@@ -19,7 +20,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class WebController {
@@ -36,20 +39,49 @@ public class WebController {
         this.roomService = roomService;
     }
 
-    // Strona główna – wyświetla listę hoteli, formularz rezerwacji oraz listę rezerwacji
     @GetMapping("/")
-    public String home(Model model) {
-        model.addAttribute("hotels", hotelService.getAllHotels());
-        model.addAttribute("recommendedHotels", hotelService.getRecommendedHotels());
-        logger.debug("Przetwarzanie żądania GET dla strony głównej");
-        model.addAttribute("message", "Witamy w aplikacji rezerwacyjnej!");
+    public String showHomePage(Model model) {
+        // 1. Dodaj do modelu listę hoteli do sekcji "Dostępne Hotele"
+        List<Hotel> hotels = hotelService.getAllHotels();
+        model.addAttribute("hotels", hotels);
 
-        logger.info("Strona główna została poprawnie załadowana");
-        model.addAttribute("hotels", reservationService.getAllHotels());
+        // 2. Dodaj pusty obiekt rezerwacji do formularza "Dodaj Rezerwację"
         model.addAttribute("reservation", new Reservation());
-        // Używamy metody getUserReservations zamiast getAllReservations
-        model.addAttribute("reservations", reservationService.getUserReservations());
-        return "index";
+
+        // 3. Pobierz rezerwacje zalogowanego użytkownika
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        List<Reservation> reservations = reservationService.getReservationsByUsername(username);
+
+        // 4. Zbuduj mapy:
+        //    hotelDetails (hotelId -> obiekt Hotel)
+        //    roomDetails (roomId -> obiekt Room)
+        Map<Long, Hotel> hotelDetails = new HashMap<>();
+        Map<Long, Room> roomDetails = new HashMap<>();
+
+        for (Reservation res : reservations) {
+            // Hotel
+            if (res.getHotelId() != null) {
+                Hotel hotel = hotelService.getHotelById(res.getHotelId());
+                if (hotel != null) {
+                    hotelDetails.put(res.getHotelId(), hotel);
+                }
+            }
+            // Pokój
+            if (res.getRoomId() != null) {
+                Room room = roomService.getRoomById(res.getRoomId());
+                if (room != null) {
+                    roomDetails.put(res.getRoomId(), room);
+                }
+            }
+        }
+
+        // 5. Dodaj rezerwacje i mapy do modelu
+        model.addAttribute("reservations", reservations);
+        model.addAttribute("hotelDetails", hotelDetails);
+        model.addAttribute("roomDetails", roomDetails);
+
+        // Zwróć nazwę widoku
+        return "index"; // index.html
     }
 
     // Obsługa wysłania formularza rezerwacji (POST)
@@ -112,29 +144,33 @@ public class WebController {
     }
 
     @GetMapping("/reservation/edit/{id}")
-    public String editReservation(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+    public String editReservation(@PathVariable Long id, Model model) {
+        // Pobierz istniejącą rezerwację
         Reservation reservation = reservationService.getReservationById(id);
         if (reservation == null) {
-            redirectAttributes.addFlashAttribute("error", "Rezerwacja nie znaleziona!");
+            // Jeśli rezerwacja nie istnieje – przekieruj np. na stronę główną
             return "redirect:/";
         }
+        // Dodaj rezerwację do modelu
         model.addAttribute("reservation", reservation);
-        // Pobieramy hotel, aby wyświetlić jego nazwę jako informację – hotelId nie będzie edytowany
-        Hotel hotel = reservationService.getHotelById(reservation.getHotelId());
-        model.addAttribute("hotelName", hotel != null ? hotel.getName() : "Nieznany hotel");
-        return "editReservation"; // nowy szablon, który stworzymy
+
+        // Pobierz listę dostępnych pokoi dla hotelu rezerwacji
+        List<Room> rooms = roomService.getRoomsByHotelId(reservation.getHotelId());
+        model.addAttribute("rooms", rooms);
+
+        return "edit_reservation"; // widok edycji rezerwacji
     }
+
+
     @PostMapping("/reservation/update")
-    public String updateReservation(@ModelAttribute("reservation") Reservation reservation,
-                                    RedirectAttributes redirectAttributes) {
-        try {
-            reservationService.updateReservation(reservation);
-            redirectAttributes.addFlashAttribute("message", "Rezerwacja zaktualizowana!");
-        } catch(RuntimeException e) {
-            redirectAttributes.addFlashAttribute("error", "Błąd przy aktualizacji rezerwacji: " + e.getMessage());
-        }
+    public String updateReservation(@ModelAttribute("reservation") Reservation updatedRes) {
+        // 1. Wywołaj serwis, aby zaktualizować dane rezerwacji
+        reservationService.updateReservation(updatedRes);
+
+        // 2. Przekieruj np. na stronę główną
         return "redirect:/";
     }
+
     @GetMapping("/search")
     public String searchHotels(@RequestParam("keyword") String keyword, Model model) {
         model.addAttribute("hotels", reservationService.searchHotels(keyword));
